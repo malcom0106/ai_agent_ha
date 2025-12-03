@@ -15,7 +15,7 @@ from homeassistant.helpers.selector import (
     TextSelectorConfig,
 )
 
-from .const import CONF_LOCAL_MODEL, CONF_LOCAL_URL, DOMAIN
+from .const import CONF_LOCAL_MODEL, CONF_LOCAL_URL, CONF_OPENAI_URL, DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -50,6 +50,10 @@ TOKEN_LABELS = {
     "alter": "Alter API Key",
     "mammouth": "Mammouth API Key",
     "local": "Local API URL (e.g., http://localhost:11434/api/generate)",
+}
+
+URL_LABELS = {
+    "openai": "OpenAI API URL (optional, default: https://api.openai.com/v1/chat/completions)",
 }
 
 DEFAULT_MODELS = {
@@ -241,6 +245,12 @@ class AiAgentHaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):  # type: ig
                 # Store the configuration data
                 self.config_data[token_field] = token_value
 
+                # Store OpenAI URL if provided
+                if provider == "openai":
+                    openai_url = user_input.get(CONF_OPENAI_URL)
+                    if openai_url and openai_url.strip():
+                        self.config_data[CONF_OPENAI_URL] = openai_url.strip()
+
                 # Add model configuration if provided
                 selected_model = user_input.get("model")
                 custom_model = user_input.get("custom_model")
@@ -310,6 +320,12 @@ class AiAgentHaConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):  # type: ig
                 TextSelectorConfig(type="password")
             ),
         }
+
+        # Add OpenAI URL field if provider is OpenAI
+        if provider == "openai":
+            schema_dict[vol.Optional(CONF_OPENAI_URL)] = TextSelector(
+                TextSelectorConfig(type="url")
+            )
 
         # Add model selection if available
         if available_models:
@@ -408,6 +424,15 @@ class AiAgentHaOptionsFlowHandler(config_entries.OptionsFlow):
                     updated_data["ai_provider"] = provider
                     updated_data[token_field] = token_value
 
+                    # Store OpenAI URL if provided
+                    if provider == "openai":
+                        openai_url = user_input.get(CONF_OPENAI_URL)
+                        if openai_url and openai_url.strip():
+                            updated_data[CONF_OPENAI_URL] = openai_url.strip()
+                        else:
+                            # Remove URL if it was cleared
+                            updated_data.pop(CONF_OPENAI_URL, None)
+
                     # Update model configuration
                     selected_model = user_input.get("model")
                     custom_model = user_input.get("custom_model")
@@ -485,6 +510,13 @@ class AiAgentHaOptionsFlowHandler(config_entries.OptionsFlow):
                 TextSelectorConfig(type="password")
             ),
         }
+
+        # Add OpenAI URL field if provider is OpenAI
+        if provider == "openai":
+            current_openai_url = self.config_entry.data.get(CONF_OPENAI_URL, "")
+            schema_dict[vol.Optional(CONF_OPENAI_URL, default=current_openai_url)] = TextSelector(
+                TextSelectorConfig(type="url")
+            )
 
         # Add model selection if available
         if available_models:
