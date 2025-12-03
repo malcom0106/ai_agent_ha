@@ -1,6 +1,6 @@
 # AI Agent HA
 
-A powerful Home Assistant custom integration that connects your Home Assistant instance with multiple AI providers (OpenAI, Google Gemini, Anthropic (Claude), OpenRouter, and Llama) to translate user requests into valid Home Assistant operations, including creating automations automatically!
+A powerful Home Assistant custom integration that connects your Home Assistant instance with multiple AI providers (OpenAI, Google Gemini, Anthropic (Claude), OpenRouter, Mammouth, and Llama) to translate user requests into valid Home Assistant operations, including creating automations automatically!
 
 ## 🚀 Quick Install
 
@@ -22,7 +22,7 @@ Another way to support me will be to try my new project. Askie - AI for kids. I 
 
 ## ✨ Features
 
-- 🤖 **Multiple AI Provider Support**: OpenAI, Google Gemini, Anthropic (Claude), OpenRouter, and Llama
+- 🤖 **Multiple AI Provider Support**: OpenAI, Google Gemini, Anthropic (Claude), OpenRouter, Mammouth, and Llama
 - 🎯 **Model Selection**: Choose from predefined models or use custom model names
 - 🏠 **Smart Home Control**: Turn lights on/off, control climate, and manage devices
 - ⚡ **Automation Creation**: Automatically create automations based on natural language
@@ -125,6 +125,15 @@ For detailed dashboard creation documentation, see: [Dashboard Creation Guide](d
 - **Models**: Llama 4 Maverick, Llama 3.1, Llama 3.2
 - **Setup**: Get API key from your Llama provider
 
+### Mammouth
+- **Models**: GPT-5, GPT-4.1, Claude Sonnet 4.5, Claude Opus 4.1, Gemini 2.5, Mistral, Grok-4, DeepSeek, Llama-4, and many more
+- **Setup**: Get API key from [Mammouth AI](https://api.mammouth.ai/)
+- **Popular Models**:
+  - `gpt-5` (OpenAI's latest flagship model)
+  - `claude-sonnet-4-5` (Anthropic's most capable model)
+  - `grok-4` (xAI's advanced reasoning model)
+  - `deepseek-r1-0528` (DeepSeek's reasoning model)
+
 ## 📦 Installation
 
 ### HACS Installation (Recommended)
@@ -165,6 +174,7 @@ Select your preferred AI provider from the dropdown:
 - Google Gemini  
 - Anthropic (Claude)
 - OpenRouter
+- Mammouth
 - Llama
 
 ### Step 2: Configure Provider

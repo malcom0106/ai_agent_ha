@@ -21,6 +21,7 @@
                     "openrouter_token": "OpenRouter API Key",
                     "anthropic_token": "Anthropic API Key",
                     "alter_token": "Alter API Key",
+                    "mammouth_token": "Mammouth API Key",
                     "model": "Model (Optional)",
                     "custom_model": "Custom Model (Optional)"
                 },
@@ -31,6 +32,7 @@
                     "openrouter_token": "Enter your OpenRouter API key",
                     "anthropic_token": "Enter your Anthropic API key",
                     "alter_token": "Enter your Alter API key",
+                    "mammouth_token": "Enter your Mammouth API key",
                     "model": "Choose a predefined model or select 'Custom...' to enter your own",
                     "custom_model": "Enter a custom model name (only used if 'Custom...' is selected above)"
                 }
@@ -44,7 +46,8 @@
             "gemini_token": "Google Gemini API key is required",
             "openrouter_token": "OpenRouter API key is required",
             "anthropic_token": "Anthropic API key is required",
-            "alter_token": "Alter API key is required"
+            "alter_token": "Alter API key is required",
+            "mammouth_token": "Mammouth API key is required"
         },
         "abort": {
             "already_configured": "AI Agent HA is already configured"
@@ -72,6 +75,7 @@
                     "openrouter_token": "OpenRouter API Key",
                     "anthropic_token": "Anthropic API Key",
                     "alter_token": "Alter API Key",
+                    "mammouth_token": "Mammouth API Key",
                     "model": "Model",
                     "custom_model": "Custom Model (Optional)"
                 },
@@ -82,6 +86,7 @@
                     "openrouter_token": "Enter your OpenRouter API key",
                     "anthropic_token": "Enter your Anthropic API key",
                     "alter_token": "Enter your Alter API key",
+                    "mammouth_token": "Enter your Mammouth API key",
                     "model": "Choose a model or select 'Custom...' to enter your own",
                     "custom_model": "Enter a custom model name (only used if 'Custom...' is selected above)"
                 }

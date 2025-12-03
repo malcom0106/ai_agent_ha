@@ -2,13 +2,14 @@
 
 Example config:
 ai_agent_ha:
-  ai_provider: openai  # or 'llama', 'gemini', 'openrouter', 'anthropic', 'alter', 'local'
+  ai_provider: openai  # or 'llama', 'gemini', 'openrouter', 'anthropic', 'alter', 'mammouth', 'local'
   llama_token: "..."
   openai_token: "..."
   gemini_token: "..."
   openrouter_token: "..."
   anthropic_token: "..."
   alter_token: "..."
+  mammouth_token: "..."
   local_url: "http://localhost:11434/api/generate"  # Required for local models
   # Model configuration (optional, defaults will be used if not specified)
   models:
@@ -18,6 +19,7 @@ ai_agent_ha:
     openrouter: "openai/gpt-4o"  # or any model available on OpenRouter
     anthropic: "claude-sonnet-4-5-20250929"  # or "claude-sonnet-4-20250514", "claude-3-5-sonnet-20241022", "claude-3-opus-20240229", etc.
     alter: "your-model-name"  # model name for Alter API
+    mammouth: "gpt-5"  # or "gpt-4.1", "claude-sonnet-4-5", "deepseek-v3.1", etc.
     local: "llama3.2"  # model name for local API (optional if your API doesn't require it)
 """
 
@@ -76,6 +78,7 @@ def sanitize_for_logging(data: Any, mask: str = "***REDACTED***") -> Any:
         "anthropic_token",
         "openrouter_token",
         "alter_token",
+        "mammouth_token",
     }
 
     if isinstance(data, dict):
@@ -846,6 +849,50 @@ class AlterClient(BaseAIClient):
                 return str(data)
 
 
+class MammouthClient(BaseAIClient):
+    def __init__(self, token, model=""):
+        self.token = token
+        self.model = model
+        self.api_url = "https://api.mammouth.ai/v1/chat/completions"
+
+    async def get_response(self, messages, **kwargs):
+        _LOGGER.debug("Making request to Mammouth API with model: %s", self.model)
+        headers = {
+            "Authorization": f"Bearer {self.token}",
+            "Content-Type": "application/json",
+        }
+        payload = {
+            "model": self.model,
+            "messages": messages,
+            "temperature": 0.7,
+            "top_p": 0.9,
+        }
+
+        _LOGGER.debug("Mammouth request payload: %s", json.dumps(payload, indent=2))
+
+        async with aiohttp.ClientSession() as session:
+            async with session.post(
+                self.api_url,
+                headers=headers,
+                json=payload,
+                timeout=aiohttp.ClientTimeout(total=300),
+            ) as resp:
+                if resp.status != 200:
+                    error_text = await resp.text()
+                    _LOGGER.error("Mammouth API error %d: %s", resp.status, error_text)
+                    raise Exception(f"Mammouth API error {resp.status}")
+                data = await resp.json()
+                # Extract text from Mammouth response (OpenAI-compatible format)
+                choices = data.get("choices", [])
+                if not choices:
+                    _LOGGER.warning("Mammouth response missing choices")
+                    _LOGGER.debug("Full Mammouth response: %s", json.dumps(data, indent=2))
+                    return str(data)
+                if choices and "message" in choices[0]:
+                    return choices[0]["message"].get("content", str(data))
+                return str(data)
+
+
 # === Main Agent ===
 class AiAgentHaAgent:
     """Agent for handling queries with dynamic data requests and multiple AI providers."""
@@ -1125,6 +1172,9 @@ class AiAgentHaAgent:
         elif provider == "alter":
             model = models_config.get("alter", "")
             self.ai_client = AlterClient(config.get("alter_token"), model)
+        elif provider == "mammouth":
+            model = models_config.get("mammouth", "")
+            self.ai_client = MammouthClient(config.get("mammouth_token"), model)
         elif provider == "local":
             model = models_config.get("local", "")
             url = config.get("local_url")

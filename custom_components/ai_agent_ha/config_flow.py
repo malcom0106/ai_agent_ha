@@ -26,6 +26,7 @@ PROVIDERS = {
     "openrouter": "OpenRouter",
     "anthropic": "Anthropic (Claude)",
     "alter": "Alter",
+    "mammouth": "Mammouth",
     "local": "Local Model",
 }
 
@@ -36,6 +37,7 @@ TOKEN_FIELD_NAMES = {
     "openrouter": "openrouter_token",
     "anthropic": "anthropic_token",
     "alter": "alter_token",
+    "mammouth": "mammouth_token",
     "local": CONF_LOCAL_URL,  # For local models, we use URL instead of token
 }
 
@@ -46,6 +48,7 @@ TOKEN_LABELS = {
     "openrouter": "OpenRouter API Key",
     "anthropic": "Anthropic API Key",
     "alter": "Alter API Key",
+    "mammouth": "Mammouth API Key",
     "local": "Local API URL (e.g., http://localhost:11434/api/generate)",
 }
 
@@ -56,6 +59,7 @@ DEFAULT_MODELS = {
     "openrouter": "openai/gpt-4o",
     "anthropic": "claude-sonnet-4-5-20250929",
     "alter": "",  # User enters custom model
+    "mammouth": "gpt-5",  # Default model for Mammouth
     "local": "llama3.2",  # Updated to use llama3.2 as default
 }
 
@@ -117,6 +121,43 @@ AVAILABLE_MODELS = {
     ],
     # Alter - user enters custom model name only
     "alter": [
+        "Custom...",
+    ],
+    "mammouth": [
+        "gpt-5",
+        "gpt-5-mini",
+        "gpt-5-nano",
+        "gpt-5-chat",
+        "gpt-4.1",
+        "gpt-4.1-mini",
+        "gpt-4.1-nano",
+        "gpt-4o",
+        "o4-mini",
+        "claude-sonnet-4-5",
+        "claude-4-sonnet-20250522",
+        "claude-opus-4-1-20250805",
+        "claude-3-7-sonnet-20250219",
+        "claude-3-5-sonnet-20241022",
+        "claude-3-5-haiku-20241022",
+        "gemini-2.5-flash",
+        "gemini-2.5-pro",
+        "mistral-medium-3.1",
+        "mistral-medium-3",
+        "mistral-large-2411",
+        "mistral-small-3.2-24b-instruct",
+        "codestral-2501",
+        "magistral-medium-2506",
+        "grok-4",
+        "grok-4-fast",
+        "grok-3",
+        "grok-3-mini",
+        "deepseek-r1-0528",
+        "deepseek-v3.2-exp",
+        "deepseek-v3.1",
+        "deepseek-v3.1-terminus",
+        "deepseek-v3-0324",
+        "llama-4-maverick",
+        "llama-4-scout",
         "Custom...",
     ],
     # For local models, provide common Ollama models with llama3.2 as the default
