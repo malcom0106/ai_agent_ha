@@ -482,10 +482,10 @@ class LlamaClient(BaseAIClient):
 
 
 class OpenAIClient(BaseAIClient):
-    def __init__(self, token, model="gpt-3.5-turbo"):
+    def __init__(self, token,api_url="https://api.openai.com/v1/chat/completions", model="gpt-3.5-turbo"):
         self.token = token
+        self.api_url = api_url
         self.model = model
-        self.api_url = "https://api.openai.com/v1/chat/completions"
 
     def _is_restricted_model(self):
         """Check if the model has restricted parameters (no temperature, top_p, etc.)."""
@@ -803,10 +803,10 @@ class OpenRouterClient(BaseAIClient):
 
 
 class AlterClient(BaseAIClient):
-    def __init__(self, token, model=""):
+    def __init__(self, token, api_url="https://alterhq.com/api/v1/chat/completions", model=""):
         self.token = token
         self.model = model
-        self.api_url = "https://alterhq.com/api/v1/chat/completions"
+        self.api_url = api_url
 
     async def get_response(self, messages, **kwargs):
         _LOGGER.debug("Making request to Alter API with model: %s", self.model)
@@ -1112,7 +1112,8 @@ class AiAgentHaAgent:
         # Initialize the appropriate AI client with model selection
         if provider == "openai":
             model = models_config.get("openai", "gpt-3.5-turbo")
-            self.ai_client = OpenAIClient(config.get("openai_token"), model)
+            openai_url = config.get("openai_api_url") or "https://api.openai.com/v1/chat/completions"
+            self.ai_client = OpenAIClient(config.get("openai_token"), openai_url, model)
         elif provider == "gemini":
             model = models_config.get("gemini", "gemini-2.5-flash")
             self.ai_client = GeminiClient(config.get("gemini_token"), model)
@@ -1170,6 +1171,15 @@ class AiAgentHaAgent:
 
         # Add more specific validation based on your API key format
         return len(token) >= 32
+
+    def _validate_api_url(self) -> bool:
+        """Validate the API URL format."""
+        provider = self.config.get("ai_provider", "openai")
+        if provider == "openai":
+            url = self.config.get("openai_api_url")
+        return bool(url.startswith(("http://", "https://")))
+        else:
+            return False
 
     def _check_rate_limit(self) -> bool:
         """Check if we're within rate limits."""
